@@ -1,0 +1,73 @@
+
+market:
+  # SOFR flat rate assumption for primary scenarios (30-day Average SOFR)
+  default_sofr: 0.043293             # ~4.33% placeholder (between yield table rows) Supplement Page 12 
+
+# SCENARIOS
+# Each scenario is a (psa_speed, sofr_level) pair.
+# Assignment requires: 0 PSA and 400 PSA.
+# Extended scenarios match prospectus yield/WAL tables.
+
+scenarios:
+  # Assignment-required scenarios
+  - scenario_id: "0PSA_Base"
+    label: "0% PSA"
+    psa_speed: 0
+    sofr: 0.043293
+    include_in_summary: true
+
+  - scenario_id: "400PSA_Base"
+    label: "400% PSA"
+    psa_speed: 400
+    sofr: 0.043293
+    include_in_summary: true
+
+  # Extended WAL scenarios (match prospectus tables)
+  - scenario_id: "100PSA_Base"
+    label: "100% PSA"
+    psa_speed: 100
+    sofr: 0.043293
+    include_in_summary: false
+
+  - scenario_id: "198PSA_Base"
+    label: "198% PSA (G1 Pricing)"
+    psa_speed: 198
+    sofr: 0.043293
+    include_in_summary: false
+
+  - scenario_id: "300PSA_Base"
+    label: "300% PSA"
+    psa_speed: 300
+    sofr: 0.043293
+    include_in_summary: false
+
+  - scenario_id: "324PSA_Base"
+    label: "324% PSA (G2 Pricing)"
+    psa_speed: 324
+    sofr: 0.043293
+    include_in_summary: false
+
+  - scenario_id: "600PSA_Base"
+    label: "600% PSA"
+    psa_speed: 600
+    sofr: 0.043293
+    include_in_summary: false
+
+  # Inverse float yield table scenarios (SOFR sensitivity)
+  - scenario_id: "198PSA_SOFR_Low"
+    label: "198% PSA / SOFR 2.33%"
+    psa_speed: 198
+    sofr: 0.0232927
+    include_in_summary: false
+
+  - scenario_id: "198PSA_SOFR_Mid"
+    label: "198% PSA / SOFR 3.33%"
+    psa_speed: 198
+    sofr: 0.0332927
+    include_in_summary: false
+
+  - scenario_id: "198PSA_SOFR_High"
+    label: "198% PSA / SOFR 4.33%"
+    psa_speed: 198
+    sofr: 0.0432927
+    include_in_summary: false

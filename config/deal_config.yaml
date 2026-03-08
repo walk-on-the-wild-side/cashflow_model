@@ -1,0 +1,309 @@
+# DEAL CONFIGURATION: Fannie Mae REMIC Trust 2025-21
+# Source: Prospectus Supplement dated February 25, 2025
+
+deal:
+  name: "Fannie Mae REMIC Trust 2025-21"      # Real Estate Mortgage Investment Conduit
+  issuer: "Federal National Mortgage Association (Fannie Mae)"
+  total_balance: 332607408
+  settlement_date: "2025-02-28"
+  distribution_day: 25          # day of month for payments
+  source: "FNM_2025-021_SUPPLEMENT.pdf"
+
+# COLLATERAL GROUPS
+# Source: Supplement Summary, Pages 5-6
+
+groups:
+  - group_id: 1
+    pool_number: "MA5073"
+    principal_balance: 146244678
+    pass_through_rate: 0.0600         # 6.00% 
+    wac: 0.06905                      # 6.905% assumed WAC, range of 6.25% to 8.50%
+    original_term_months: 360
+    remaining_term_months: 334
+    loan_age_months: 20
+    wac_range_low: 0.0625
+    wac_range_high: 0.0850
+    wam_range_low: 241
+    wam_range_high: 360
+
+  - group_id: 2
+    pool_number: "FS9996"
+    principal_balance: 186362730      
+    pass_through_rate: 0.0650         # 6.50% 
+    wac: 0.07454                      # 7.454% assumed WAC, range of 6.75% to 9.00%
+    original_term_months: 360
+    remaining_term_months: 336
+    loan_age_months: 15
+    wac_range_low: 0.0675
+    wac_range_high: 0.0900
+    wam_range_low: 241
+    wam_range_high: 360
+
+# TRANCHES / CLASSES
+# Source: Cover Page (Page 1), Interest Rates (Page 6)
+# Fields: class_id, group_id, original_balance, principal_type, interest_type,
+#         fixed_rate, float_spread_bps, inv_cap, rate_floor, rate_ceiling,
+#         is_accrual, is_notional, notional_ref_class, is_delay,
+#         waterfall_priority, cusip, final_dist_date
+
+classes:
+  # GROUP 1
+  - class_id: "BA"
+    group_id: 1
+    original_balance: 49911000
+    principal_type: "SEQ"
+    interest_type: "FIX"
+    fixed_rate: 0.055            
+    is_accrual: false
+    is_notional: false
+    is_delay: true
+    waterfall_slot: "sequential_50pct"
+    waterfall_priority: 1
+    cusip: "3136BU3H1"
+    final_dist_date: "2051-02-25"
+    exchangeable: true
+    rcr_group: "BC"
+
+  - class_id: "BE"
+    group_id: 1
+    original_balance: 6232000
+    principal_type: "SEQ"
+    interest_type: "FIX"
+    fixed_rate: 0.055
+    is_accrual: false
+    is_notional: false
+    is_delay: true
+    waterfall_slot: "sequential_50pct"
+    waterfall_priority: 2
+    cusip: "3136BU3J7"
+    final_dist_date: "2052-05-25"
+    exchangeable: true
+    rcr_group: "BC"
+
+  - class_id: "BV"
+    group_id: 1
+    original_balance: 7620000
+    principal_type: "SEQ/AD"
+    interest_type: "FIX"
+    fixed_rate: 0.055
+    is_accrual: false
+    is_notional: false
+    is_delay: true
+    waterfall_slot: "sequential_50pct"  # also receives BZ accrual first
+    waterfall_priority: 3
+    cusip: "3136BU3K4"
+    final_dist_date: "2036-02-25"
+    exchangeable: true
+    rcr_group: "BW"
+
+  - class_id: "BZ"
+    group_id: 1
+    original_balance: 9359339
+    principal_type: "SEQ"
+    interest_type: "FIX/Z"            # Accrual class
+    fixed_rate: 0.055
+    is_accrual: true
+    is_notional: false
+    is_delay: true
+    waterfall_slot: "sequential_50pct"
+    waterfall_priority: 4
+    cusip: "3136BU3L2"
+    final_dist_date: "2053-07-25"
+    exchangeable: true
+    rcr_group: "BW"
+
+  - class_id: "FB"
+    group_id: 1
+    original_balance: 73122339
+    principal_type: "PT"
+    interest_type: "FLT"              # Floating rate
+    fixed_rate: null
+    float_spread_bps: 130
+    rate_floor: 0.0130
+    rate_ceiling: 0.0650
+    initial_rate: 0.0562927
+    is_accrual: false
+    is_notional: false
+    is_delay: false                   # No-delay class Page 10
+    waterfall_slot: "pt_50pct"        # Receives 50% of Group 1 CF Page 10
+    waterfall_priority: 1
+    cusip: "3136BU3N8"
+    final_dist_date: "2053-07-25"
+
+  - class_id: "SB"
+    group_id: 1
+    original_balance: 73122339        # Notional - equals FB 
+    principal_type: "NTL(PT)"
+    interest_type: "INV/IO"           # Inverse floating IO
+    fixed_rate: null
+    inv_cap: 0.0520                   # 5.2% - SOFR 
+    rate_floor: 0.0000
+    rate_ceiling: 0.0520
+    initial_rate: 0.0087073
+    is_accrual: false
+    is_notional: true
+    notional_ref_class: "FB"          # Tracks FB balance Page 6
+    is_delay: false
+    waterfall_slot: "notional_only"
+    cusip: "3136BU3P3"
+    final_dist_date: "2053-07-25"
+
+  # GROUP 2
+  - class_id: "CA"
+    group_id: 2
+    original_balance: 82000000
+    principal_type: "SEQ/AD"
+    interest_type: "FIX"
+    fixed_rate: 0.050
+    is_accrual: false
+    is_notional: false
+    is_delay: true
+    waterfall_slot: "sequential_50pct"   # also receives CZ accrual first
+    waterfall_priority: 1
+    cusip: "3136BU3Q1"
+    final_dist_date: "2049-11-25"
+
+  - class_id: "CZ"
+    group_id: 2
+    original_balance: 11181365
+    principal_type: "SEQ"
+    interest_type: "FIX/Z"
+    fixed_rate: 0.050
+    is_accrual: true
+    is_notional: false
+    is_delay: true
+    waterfall_slot: "sequential_50pct"
+    waterfall_priority: 2
+    cusip: "3136BU3W8"
+    final_dist_date: "2054-02-25"
+
+  - class_id: "FC"
+    group_id: 2
+    original_balance: 93181365
+    principal_type: "PT"
+    interest_type: "FLT"
+    fixed_rate: null
+    float_spread_bps: 90
+    rate_floor: 0.0090
+    rate_ceiling: 0.0800
+    initial_rate: 0.0522926
+    is_accrual: false
+    is_notional: false
+    is_delay: false
+    waterfall_slot: "pt_50pct"
+    waterfall_priority: 1
+    cusip: "3136BU3Y4"
+    final_dist_date: "2054-02-25"
+
+  - class_id: "SC"
+    group_id: 2
+    original_balance: 93181365        # Notional - equals FC 
+    principal_type: "NTL(PT)"
+    interest_type: "INV/IO"           # Inverse floating IO
+    fixed_rate: null
+    inv_cap: 0.0710                   # 7.1% - SOFR 
+    rate_floor: 0.0000
+    rate_ceiling: 0.0710
+    initial_rate: 0.0277074
+    is_accrual: false
+    is_notional: true
+    notional_ref_class: "FC"          # Tracks FC balance Page 6
+    is_delay: false
+    waterfall_slot: "notional_only"
+    cusip: "3136BU3Z1"
+    final_dist_date: "2054-02-25"
+
+# WATERFALL RULES
+# Source: Distributions of Principal, Page 10
+
+waterfall_rules:
+  group1:
+    # Step 1: The BZ Accrual Amount to BV until retired, and thereafter to BZ.
+    - step: 1
+      description: "The BZ Accrual Amount to BV until retired, and thereafter to BZ."
+      source: "accrual"
+      accrual_class: "BZ"
+      targets:
+        - class_id: "BV"
+          mode: "sequential"
+          priority: 1
+        - class_id: "BZ"
+          mode: "sequential"
+          priority: 2
+    # Step 2a: 50% of Group 1 CF to sequential classes
+    - step: 2
+      description: "50% of Group 1 CF to BA->BE->BV->BZ sequentially"
+      source: "collateral_cf"
+      split_pct: 0.50
+      targets:
+        - class_id: "BA"
+          mode: "sequential"
+          priority: 1
+        - class_id: "BE"
+          mode: "sequential"
+          priority: 2
+        - class_id: "BV"
+          mode: "sequential"
+          priority: 3
+        - class_id: "BZ"
+          mode: "sequential"
+          priority: 4
+    # Step 2b: 50% to FB
+    - step: 3
+      description: "50% of Group 1 CF to FB"
+      source: "collateral_cf"
+      split_pct: 0.50
+      targets:
+        - class_id: "FB"
+          mode: "sequential"
+          priority: 1
+
+  group2:
+    # Step 1: The CZ Accrual Amount to CA until retired, and thereafter to CZ.
+    - step: 1
+      description: "The CZ Accrual Amount to CA until retired, and thereafter to CZ."
+      source: "accrual"
+      accrual_class: "CZ"
+      targets:
+        - class_id: "CA"
+          mode: "sequential"
+          priority: 1
+        - class_id: "CZ"
+          mode: "sequential"
+          priority: 2
+    # Step 2a: 50% of Group 2 CF sequentially
+    - step: 2
+      description: "50% of Group 2 CF to CA->CZ sequentially"
+      source: "collateral_cf"
+      split_pct: 0.50
+      targets:
+        - class_id: "CA"
+          mode: "sequential"
+          priority: 1
+        - class_id: "CZ"
+          mode: "sequential"
+          priority: 2
+    # Step 2b: 50% to FC
+    - step: 3
+      description: "50% of Group 2 CF to FC"
+      source: "collateral_cf"
+      split_pct: 0.50
+      targets:
+        - class_id: "FC"
+          mode: "sequential"
+          priority: 1
+
+# BENCHMARK WALs FROM PROSPECTUS (for validation)
+# Source: Pages 7
+
+benchmark_wals:
+  BA:  {0: 14.6, 100: 6.0,  198: 3.4, 300: 2.3, 400: 1.8, 600: 1.2}
+  BE:  {0: 24.0, 100: 15.0, 198: 9.1, 300: 6.2, 400: 4.6, 600: 3.0}
+  BV:  {0: 6.0,  100: 6.0,  198: 6.0, 300: 5.3, 400: 4.5, 600: 3.2}
+  BZ:  {0: 26.3, 100: 21.6, 198: 15.7, 300: 12.0, 400: 9.4, 600: 6.3}
+  FB:  {0: 18.1, 100: 10.4, 198: 6.7, 300: 4.7,  400: 3.6, 600: 2.3}
+  SB:  {0: 18.1, 100: 10.4, 198: 6.7, 300: 4.7,  400: 3.6, 600: 2.3}
+  CA:  {0: 14.1, 100: 7.2,  324: 3.1, 500: 2.1, 650: 1.7, 850: 1.3, 1000: 1.1}
+  CZ:  {0: 25.6, 100: 21.2, 324: 11.8, 500: 8.0, 650: 6.1, 850: 4.5, 1000: 3.6}
+  FC:  {0: 18.6, 100: 10.6, 324: 4.6, 500: 3.0, 650: 2.3, 850: 1.7, 1000: 1.4}
+  SC:  {0: 18.6, 100: 10.6, 324: 4.6, 500: 3.0, 650: 2.3, 850: 1.7, 1000: 1.4}
