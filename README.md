@@ -71,7 +71,7 @@ cashfow_model/
 
 1. Clone or download the project:
 ```bash
-cd riskspan_assesment
+cd cashflow_model
 ```
 
 2. Install dependencies:
