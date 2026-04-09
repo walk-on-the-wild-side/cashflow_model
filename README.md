@@ -38,7 +38,7 @@ All deal-specific inputs are **parameterized in YAML configuration files** — n
 ## Project Structure
 
 ```
-riskspan_assesment/
+cashfow_model/
 ├── config/
 │   ├── deal_config.yaml              # Deal structure, classes, groups, waterfall rules
 │   └── market_config.yaml            # SOFR rates, PSA scenarios
