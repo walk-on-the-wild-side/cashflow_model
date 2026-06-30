@@ -1,44 +1,43 @@
-# CMO REMIC Deal Model
+# CMO/REMIC Cash Flow Model
 
-**A Python cash flow model for Fannie Mae REMIC Trust 2025-21 structured finance deals.**
+**A configurable Python cash flow engine for Collateralized Mortgage Obligations (CMOs) and REMIC (Real Estate Mortgage Investment Conduit) structured finance deals.**
 
-**Author:** Amartya Mani Triapthi  
-**Email:** mt.amartya@gmail.com  
-**Phone:** +91-9792810946
+**Author:** Amartya Mani Triapthi
+**Email:** mt.amartya@gmail.com
 
 ---
 
 ## Overview
 
-This project implements a **comprehensive cash flow modeling engine** for Collateralized Mortgage Obligations (CMOs) and REMIC (Real Estate Mortgage Investment Conduit) structured finance deals. The model is built from the **Fannie Mae REMIC Trust 2025-21 prospectus supplement** and supports:
+This project implements a **cash flow modeling engine** for CMO/REMIC structured finance deals. It supports:
 
 - **Multi-class tranches** with fixed, floating, inverse, and accrual rate structures
 - **Principal & interest waterfalls** with complex distribution rules
-- **PSA prepayment scenarios** 
-- **SOFR rate scenarios** 
-- **WAL (Weighted Average Life) calculations** 
-- **Excel output** 
+- **PSA prepayment scenarios**
+- **SOFR rate scenarios**
+- **WAL (Weighted Average Life) calculations**
+- **Excel output**
 
-All deal-specific inputs are **parameterized in YAML configuration files** — no code changes are needed to model a different deal structure.
+All deal-specific inputs are **parameterized in YAML configuration files** — no code changes are needed to model a different deal structure. The repo ships with a worked example based on the Fannie Mae REMIC Trust 2025-21 prospectus supplement (see `docs/`), which doubles as a validation case against published WAL benchmarks.
 
 ---
 
 ## Key Features
 
-✓ **Scenario-based modeling** — Multi-dimensional PSA × SOFR scenario matrix  
-✓ **Complex rate mechanics** — Support for fixed, floating, inverse, I/O and Z-class (accrual) bonds  
-✓ **Cash flow distribution** — Principal and interest waterfalls with priority of payment rules  
-✓ **Mortgage dynamics** — PSA prepayment model  
-✓ **Validation & verification** — WAL comparisons against prospectus benchmarks  
-✓ **Excel generation** — Summary Tables and multiple analysis tabs  
-✓ **Configuration-driven** — Zero-code deal modifications via YAML configs  
+✓ **Scenario-based modeling** — Multi-dimensional PSA × SOFR scenario matrix
+✓ **Complex rate mechanics** — Support for fixed, floating, inverse, I/O and Z-class (accrual) bonds
+✓ **Cash flow distribution** — Principal and interest waterfalls with priority of payment rules
+✓ **Mortgage dynamics** — PSA prepayment model
+✓ **Validation & verification** — WAL comparisons against prospectus benchmarks
+✓ **Excel generation** — Summary tables and multiple analysis tabs
+✓ **Configuration-driven** — Zero-code deal modifications via YAML configs
 
 ---
 
 ## Project Structure
 
 ```
-cashfow_model/
+cashflow_model/
 ├── config/
 │   ├── deal_config.yaml              # Deal structure, classes, groups, waterfall rules
 │   └── market_config.yaml            # SOFR rates, PSA scenarios
@@ -53,7 +52,8 @@ cashfow_model/
 ├── tests/
 │   └── test_wal.py                   # Unit tests for WAL calculations
 ├── output/
-│   └── FNM_2025_21_cashflows.xlsx    # Generated Excel output file
+│   └── cashflows.xlsx                # Generated Excel output file
+├── docs/                             # Reference prospectus for the bundled example deal
 ├── run_model.py                      # Main entry point
 ├── requirements.txt                  # Python dependencies
 └── README.md
@@ -69,8 +69,9 @@ cashfow_model/
 
 ### Installation
 
-1. Clone or download the project:
+1. Clone the repo:
 ```bash
+git clone https://github.com/walk-on-the-wild-side/cashflow_model.git
 cd cashflow_model
 ```
 
@@ -92,11 +93,11 @@ The following key packages are included:
 ### Quick Start
 
 ```bash
-# Run all scenarios with default config
+# Run all scenarios with default (example) config
 python run_model.py
 ```
 
-This generates the default output file: `output/FNM_2025_21_cashflows.xlsx`
+This generates the default output file: `output/cashflows.xlsx`
 
 ### Command-Line Options
 
@@ -108,12 +109,9 @@ python run_model.py -h
 python run_model.py --scenarios 0PSA_Base 400PSA_Base
 
 # Use custom configuration files
-python run_model.py --deal config/deal_config.yaml \
-                    --market config/market_config.yaml \
-                    --output output/custom_output.xlsx
-
-# Run subset of scenarios
-python run_model.py --scenarios 100PSA_Base 200PSA_Base 300PSA_Base
+python run_model.py --deal config/my_deal.yaml \
+                    --market config/my_market.yaml \
+                    --output output/my_output.xlsx
 ```
 
 ### Python API
@@ -134,7 +132,7 @@ deal.run(scenario_filter=["0PSA_Base", "400PSA_Base"])
 deal.write_outputs("output/results.xlsx")
 
 # Access results programmatically
-print(deal.wal_df)           # WAL results table
+print(deal.wal_df)            # WAL results table
 print(deal.all_results)       # Scenario cash flows
 print(deal.validation_df)     # WAL vs. benchmark validation
 ```
@@ -172,7 +170,7 @@ classes:                             # Tranches/securities
     fixed_rate: 0.0450
     waterfall_priority: 1
     # ... additional class parameters
-    
+
 benchmark_wals:                      # Prospectus WAL targets
   "A1": {0: 2.5, 400: 1.2}
   # ...
@@ -205,7 +203,7 @@ scenarios:
 ## Key Components
 
 ### `collateral.py` — Prepayment & Amortization
-Implements **PSA (Public Securities Association) model**:
+Implements the **PSA (Public Securities Association) model**:
 - Compounds monthly CPR (conditional prepayment rate) from PSA speed parameter
 - Amortizes mortgage principal monthly
 - Calculates mortgage pool cash flows (principal + interest)
@@ -213,26 +211,26 @@ Implements **PSA (Public Securities Association) model**:
 ### `rate_model.py` — Interest Rate Calculation
 Computes monthly coupon rates for all class types:
 - **Fixed-rate classes** — Constant coupon
-- **Floating-rate classes** — SOFR + spread, with optional caps/floors  
+- **Floating-rate classes** — SOFR + spread, with optional caps/floors
 - **Inverse/IO classes** — Inverse relationship to index
 - **Accrual/Z-classes** — Accrue interest, paid at maturity
 
 ### `waterfall.py` — Cash Flow Distribution
-Distributes mortgage cash flows to tranches following priority rules:
+Distributes mortgage cash flows to tranches following priority rules defined in config:
 - Sequential principal paydown (by waterfall priority)
 - Interest payments to all classes
 - Residual/equity to final tier
 
 ### `scenarios.py` — Scenario Engine
 Iterates through all scenario combinations:
-- Runs cash flow model for each (PSA speed, SOFR rate) pair
+- Runs the cash flow model for each (PSA speed, SOFR rate) pair
 - Aggregates results by scenario
 - Computes statistics and metrics
 
 ### `outputs.py` — Analysis & Reporting
 Generates analysis outputs:
 - **WAL calculations** — Weighted average life for each class
-- **Validation** — Compares calculated WALs vs. prospectus benchmarks
+- **Validation** — Compares calculated WALs vs. configured benchmarks
 - **Excel export** — Multi-tab workbook with detailed cash flows
 - **Decrement tables** — Principal activity by month/scenario
 
@@ -248,15 +246,16 @@ Main controller class that:
 
 ### Excel Workbook Structure
 
-The generated Excel file (`output/FNM_2025_21_cashflows.xlsx`) contains:
+The generated Excel file contains:
 
 | Sheet | Content |
 |-------|---------|
-| **WAL Summary** | Weighted average life by class and scenario |
-| **Scenario Results** | Detailed monthly cash flows for each scenario |
-| **Validation** | WAL calculations vs. prospectus benchmarks |
-| **Collateral CF** | Mortgage pool cash flows (principal + interest) |
-| **Decrement Tables** | Principal balance by class and month |
+| Summary Dashboard | Deal overview, WAL table color-coded vs. benchmarks |
+| WAL Validation | Model WAL vs. benchmark (PASS/FAIL) |
+| WAL Pivot | Classes × scenarios pivot table |
+| Coll G1/G2 [scenario] | Monthly collateral cash flows per group |
+| ClassCF [scenario] | Monthly class-level principal, interest, balance |
+| Decr [class] | Decrement tables: % original balance outstanding |
 
 ---
 
@@ -275,80 +274,7 @@ Tests validate:
 
 ---
 
-# Run specific scenarios only
-python run_model.py --scenarios 0PSA_Base 400PSA_Base
-
----
-# Custom deal config
-python run_model.py --deal config/my_deal.yaml --market config/my_market.yaml
-
-### Using as a Library
-
-```python
-from src.deal import Deal
-
-deal = Deal("config/deal_config.yaml", "config/market_config.yaml")
-deal.run()
-
-# Access results
-wal_table = deal.get_wal_table()
-ba_cf = deal.get_class_cashflows("BA", "0PSA_Base")
-validation = deal.get_validation_table()
-
-# Write Excel
-deal.write_outputs("output/my_output.xlsx")
-```
-
-
----
-# Core Logic Summary
-
-#### 1. Collateral Engine (`collateral.py`)
-Standard PSA amortization model:
-- CPR(m) = min(loan_age + m, 30) / 30 × 6% × PSA/100
-- SMM = 1 − (1 − CPR)^(1/12)
-- Monthly principal = scheduled amortization + SMM × remaining balance
-- Interest at pass-through rate passed to REMIC
-
-#### 2. Interest Rate Models (`rate_model.py`)
-| Type    | Formula                              | Classes        |
-|---------|--------------------------------------|----------------|
-| FIX     | fixed_rate (constant)                | BA, BE, BV, CA |
-| FIX/Z   | fixed_rate; interest → principal     | BZ, CZ         |
-| FLT     | max(floor, min(cap, SOFR + spread))  | FB, FC         |
-| INV/IO  | max(0, min(cap, cap_rate − SOFR))    | SB, SC         |
-
-#### 3. Waterfall (`waterfall.py`)
-**Group 1 (Page 10 of supplement):**
-1. BZ Accrual Amount → BV (until retired), then BZ
-2. 50% of Group 1 CF → BA → BE → BV → BZ (sequential)
-3. 50% of Group 1 CF → FB
-
-**Group 2 (Page 10 of supplement):**
-1. CZ Accrual Amount → CA (until retired), then CZ
-2. 50% of Group 2 CF → CA → CZ (sequential)
-3. 50% of Group 2 CF → FC
-
-#### 4. WAL Calculation (`outputs.py`)
-WAL = Σ(t × Principal_payment) / Σ(Principal_payment)
-where t = period / 12 (years from settlement)
-
----
-
-### Output Excel Workbook
-
-| Sheet | Contents |
-|-------|----------|
-| Summary Dashboard | Deal overview, WAL table color-coded vs. prospectus benchmarks |
-| WAL Validation | Model WAL vs. prospectus benchmark (PASS/FAIL) |
-| WAL Pivot | Classes × scenarios pivot table |
-| Coll G1/G2 [scenario] | Monthly collateral cash flows per group |
-| ClassCF [scenario] | Monthly class-level principal, interest, balance |
-| Decr [class] | Decrement tables: % original balance outstanding |
-
----
-
-### Generalizing to a New Deal
+## Generalizing to a New Deal
 
 To model a different REMIC deal:
 
@@ -358,7 +284,7 @@ To model a different REMIC deal:
    - `groups:` — collateral characteristics per group
    - `classes:` — all tranche definitions, rates, types
    - `waterfall_rules:` — principal distribution rules
-   - `benchmark_wals:` — prospectus WAL benchmarks for validation
+   - `benchmark_wals:` — benchmark WALs for validation
 3. **Run:** `python run_model.py --deal config/my_new_deal.yaml`
 
 Supported deal types via config:
@@ -372,7 +298,47 @@ Supported deal types via config:
 
 ---
 
-### Key Assumptions (from Supplement)
+## Core Logic Summary
+
+#### 1. Collateral Engine (`collateral.py`)
+Standard PSA amortization model:
+- CPR(m) = min(loan_age + m, 30) / 30 × 6% × PSA/100
+- SMM = 1 − (1 − CPR)^(1/12)
+- Monthly principal = scheduled amortization + SMM × remaining balance
+- Interest at pass-through rate passed to REMIC
+
+#### 2. Interest Rate Models (`rate_model.py`)
+| Type    | Formula                              |
+|---------|---------------------------------------|
+| FIX     | fixed_rate (constant)                |
+| FIX/Z   | fixed_rate; interest → principal     |
+| FLT     | max(floor, min(cap, SOFR + spread))  |
+| INV/IO  | max(0, min(cap, cap_rate − SOFR))    |
+
+#### 3. Waterfall (`waterfall.py`)
+Priority of payments is fully defined by `waterfall_rules` in the deal config. The bundled example deal (Fannie Mae REMIC Trust 2025-21) uses:
+
+**Group 1:**
+1. BZ Accrual Amount → BV (until retired), then BZ
+2. 50% of Group 1 CF → BA → BE → BV → BZ (sequential)
+3. 50% of Group 1 CF → FB
+
+**Group 2:**
+1. CZ Accrual Amount → CA (until retired), then CZ
+2. 50% of Group 2 CF → CA → CZ (sequential)
+3. 50% of Group 2 CF → FC
+
+#### 4. WAL Calculation (`outputs.py`)
+WAL = Σ(t × Principal_payment) / Σ(Principal_payment)
+where t = period / 12 (years from settlement)
+
+---
+
+## Example Deal: Fannie Mae REMIC Trust 2025-21
+
+The repo's default config models this real-world deal as a worked example and validation case against its prospectus supplement (`docs/`).
+
+### Key Assumptions
 
 | Assumption | Value | Source |
 |------------|-------|--------|
@@ -387,16 +353,13 @@ Supported deal types via config:
 | OID PSA — Group 1 | 198% PSA | Page 17 |
 | OID PSA — Group 2 | 324% PSA | Page 17 |
 | Distribution day | 25th of each month | Page 10 |
-| Assignment scenarios | 0% PSA and 400% PSA | Assignment doc |
-
----
 
 ### WAL Notes
 
-BA, BE, CA, and CZ WALs tie out closely to prospectus.  
+BA, BE, CA, and CZ WALs tie out closely to the prospectus.
 BV/BZ/FB show modest differences due to:
 - The prospectus uses pool-level heterogeneity (not a single WAC/WAM repline)
 - The AD (Accrual-Directed) component for BV has timing nuances
-- Exact SOFR level affects floating class WALs
+- The exact SOFR level affects floating class WALs
 
 These are standard modeling approximations for a single-repline engine.

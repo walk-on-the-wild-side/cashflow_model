@@ -2,9 +2,9 @@
 
 Waterfall engine.
 
-Driven by waterfall_rules config.
-
-Fannie Mae REMIC Trust 2025-21 Waterfall Structure
+Driven by waterfall_rules config. The rules below illustrate the structure
+modeled by the bundled example deal (config/deal_config.yaml); a different
+deal config produces a different waterfall.
 
 Group 1 rules:
   Step 1: The BZ Accrual Amount to BV until retired, and thereafter to BZ.

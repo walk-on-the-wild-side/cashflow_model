@@ -6,7 +6,7 @@ Usage:
     from src.deal import Deal
     deal = Deal("config/deal_config.yaml", "config/market_config.yaml")
     deal.run()
-    deal.write_outputs("output/FNM_2025_21_cashflows.xlsx")
+    deal.write_outputs("output/cashflows.xlsx")
 """
 
 import os

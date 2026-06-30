@@ -24,14 +24,14 @@ def main():
                         help="Path to deal config YAML")
     parser.add_argument("--market", default="config/market_config.yaml",
                         help="Path to market config YAML")
-    parser.add_argument("--output", default="output/FNM_2025_21_cashflows.xlsx",
+    parser.add_argument("--output", default="output/cashflows.xlsx",
                         help="Output Excel file path")
     parser.add_argument("--scenarios", nargs="*", default=None,
                         help="Scenario IDs to run (default: all)")
     args = parser.parse_args()
 
     print("=" * 70)
-    print("  CMO REMIC DEAL MODEL — Fannie Mae REMIC Trust 2025-21")
+    print("  CMO/REMIC CASH FLOW MODEL")
     print("=" * 70)
 
     # Load deal

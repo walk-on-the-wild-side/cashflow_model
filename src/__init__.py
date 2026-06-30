@@ -1,7 +1,7 @@
 """
-Fannie Mae REMIC Trust 2025-21 Implementation
+CMO/REMIC Cash Flow Model
 
-Cash flow model for multi-class REMIC structures.
+Cash flow model for multi-class REMIC structures, configured via YAML.
 
 Modules:
     collateral  : PSA prepayment model and amortization engine
