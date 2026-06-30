@@ -2,7 +2,7 @@
 
 **A configurable Python cash flow engine for Collateralized Mortgage Obligations (CMOs) and REMIC (Real Estate Mortgage Investment Conduit) structured finance deals.**
 
-**Author:** Amartya Mani Triapthi
+**Author:** Amartya Mani Tripathi
 **Email:** mt.amartya@gmail.com
 
 ---
